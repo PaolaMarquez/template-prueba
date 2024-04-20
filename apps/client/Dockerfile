@@ -5,10 +5,7 @@ FROM node:14
 WORKDIR /usr/src/app
 
 # Copiar los archivos necesarios
-COPY .eslintrc.js /usr/src/app/
-COPY package-lock.json /usr/src/app/
 COPY package.json /usr/src/app/
-COPY tsconfig.json /usr/src/app/
 
 # Instalar las dependencias del proyecto
 RUN npm install
@@ -17,9 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponer el puerto que tu aplicación utiliza
-EXPOSE 3000
 EXPOSE 3001
-EXPOSE 3002
 
 # Comando para ejecutar la aplicación
 CMD [ "npm", "run", "dev" ]
