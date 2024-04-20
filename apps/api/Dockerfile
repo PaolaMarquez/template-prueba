@@ -9,6 +9,7 @@ COPY .eslintrc.js /usr/src/app/
 COPY package.json /usr/src/app/
 COPY tsconfig.json /usr/src/app/
 COPY tsup.config.ts /usr/src/app/
+COPY packages /usr/src/app/
 
 # Instalar las dependencias del proyecto
 RUN npm install
