@@ -1,20 +1,39 @@
-# Usar una imagen base de Node.js
-FROM node:14
+FROM node:20-alpine AS base
+ENV SCOPE=@avila-tek/client
+RUN apk add --no-cache libc6-compat git
+RUN apk update
 
-# Establecer el directorio de trabajo en el contenedor
-WORKDIR /usr/src/app
-
-# Copiar los archivos necesarios
-COPY package.json /usr/src/app/
-
-# Instalar las dependencias del proyecto
-RUN npm install
-
-# Copiar el resto de los archivos del proyecto
+FROM base AS builder
+WORKDIR /app
 COPY . .
+RUN npx turbo prune ${SCOPE} --docker
 
-# Exponer el puerto que tu aplicación utiliza
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
+WORKDIR /app
+
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/package-lock.json ./package-lock.json
+RUN npm ci --no-audit
+
+# Build the project and its dependencies
+COPY --from=builder /app/out/full/ .
+COPY turbo.json turbo.json
+
+
+RUN npx turbo build --scope=${SCOPE} --filter=${SCOPE} --include-dependencies
+
+FROM base AS runner
+WORKDIR /app
+
+
+# Don't run production as root
+RUN addgroup --system --gid 1001 expressjs
+RUN adduser --system --uid 1001 expressjs
+USER expressjs
+COPY --from=installer /app .
+
 EXPOSE 3001
 
-# Comando para ejecutar la aplicación
-CMD [ "npm", "run", "dev" ]
+CMD node apps/client/src/app/layout.tsx
