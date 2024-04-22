@@ -19,7 +19,7 @@ RUN npm ci --no-audit
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
+COPY turbo.json /app/turbo.json
 
 
 RUN npx turbo build --scope=${SCOPE} --filter=${SCOPE} --include-dependencies
