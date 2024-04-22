@@ -6,7 +6,7 @@ RUN apk update
 FROM base AS builder
 WORKDIR /app
 
-RUN npm update -g
+RUN npm install -g npm@10.5.2
 RUN npm i -g turbo
 COPY . .
 RUN npx turbo prune ${SCOPE} --docker
