@@ -27,6 +27,9 @@ RUN npx turbo build --scope=${SCOPE} --filter=${SCOPE} --include-dependencies
 FROM base AS runner
 WORKDIR /app
 
+ENV NODE_ENV=production
+ENV PORT=3000
+
 # Don't run production as root
 RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
