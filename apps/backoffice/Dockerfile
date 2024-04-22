@@ -20,7 +20,7 @@ RUN npm ci --no-audit
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-COPY ../../turbo.json /app/turbo.json
+COPY turbo.json turbo.json
 
 ARG NEXT_PUBLIC_ENDPOINT
 ENV NEXT_PUBLIC_ENDPOINT=$NEXT_PUBLIC_ENDPOINT
