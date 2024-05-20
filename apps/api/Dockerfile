@@ -7,6 +7,7 @@ FROM base AS builder
 WORKDIR /app
 COPY . .
 RUN npm install -g npm@10.5.2
+RUN npm i -g turbo
 RUN npx turbo prune ${SCOPE} --docker
 
 # Add lockfile and package.json's of isolated subworkspace
