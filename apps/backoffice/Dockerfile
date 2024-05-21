@@ -40,11 +40,11 @@ RUN npx turbo build --scope=${SCOPE} --filter=${SCOPE} --include-dependencies
 FROM base AS runner
 WORKDIR /app
 
-ARG TURBO_TOKEN
-ARG TURBO_TEAM
+# ARG TURBO_TOKEN
+# ARG TURBO_TEAM
 
-ENV TURBO_TOKEN=${TURBO_TOKEN}
-ENV TURBO_TEAM=${TURBO_TEAM}
+# ENV TURBO_TOKEN=${TURBO_TOKEN}
+# ENV TURBO_TEAM=${TURBO_TEAM}
 ENV NODE_ENV=production
 
 # Don't run production as root

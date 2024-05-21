@@ -17,7 +17,7 @@ services:
   backoffice:
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
+      dockerfile: ./apps/backoffice/Dockerfile
     ports:
       - '3002:3002'
     environment:
@@ -28,6 +28,6 @@ services:
   client:
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
+      dockerfile: ./apps/client/Dockerfile
     ports:
       - '3001:3001'
