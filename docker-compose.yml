@@ -2,8 +2,8 @@ version: '3'
 services:
   api:
     build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/api/Dockerfile
     ports:
       - '3000:3000'
     environment:
@@ -16,8 +16,8 @@ services:
 
   backoffice:
     build:
-      context: ./apps/backoffice
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/api/Dockerfile
     ports:
       - '3002:3002'
     environment:
@@ -27,7 +27,7 @@ services:
 
   client:
     build:
-      context: ./apps/client
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./apps/api/Dockerfile
     ports:
       - '3001:3001'

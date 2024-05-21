@@ -1,19 +1,24 @@
 FROM node:20-alpine AS base
-ENV SCOPE=@avila-tek/admin
-RUN apk add --no-cache libc6-compat git
+RUN apk add --no-cache git libc6-compat
 RUN apk update
+WORKDIR /app
+ENV SCOPE=@avila-tek/admin
+
 
 FROM base AS builder
+# Set working directory
 WORKDIR /app
-
-RUN npm install -g npm@10.5.2
-RUN npm i -g turbo
+RUN npm install -g turbo
 COPY . .
-RUN npx turbo prune ${SCOPE} --docker
+RUN turbo prune ${SCOPE} --docker
 
+# Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
+RUN apk add --no-cache libc6-compat
+RUN apk update
 WORKDIR /app
 
+# First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/package-lock.json ./package-lock.json
@@ -21,16 +26,26 @@ RUN npm ci --no-audit
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-COPY --from=builder /app/out/turbo.json ./turbo.json
+COPY turbo.json turbo.json
 
-ARG NEXT_PUBLIC_ENDPOINT
-ENV NEXT_PUBLIC_ENDPOINT=$NEXT_PUBLIC_ENDPOINT
+# Uncomment and use build args to enable remote caching
+# ARG TURBO_TEAM
+# ENV TURBO_TEAM=$TURBO_TEAM
+
+# ARG TURBO_TOKEN
+# ENV TURBO_TOKEN=$TURBO_TOKEN
+
 RUN npx turbo build --scope=${SCOPE} --filter=${SCOPE} --include-dependencies
 
 FROM base AS runner
 WORKDIR /app
-ENV NODE_ENV=production
 
+ARG TURBO_TOKEN
+ARG TURBO_TEAM
+
+ENV TURBO_TOKEN=${TURBO_TOKEN}
+ENV TURBO_TEAM=${TURBO_TEAM}
+ENV NODE_ENV=production
 
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
