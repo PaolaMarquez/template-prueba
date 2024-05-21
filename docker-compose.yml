@@ -17,7 +17,7 @@ services:
   backoffice:
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
+      dockerfile: ./apps/backoffice/Dockerfile
     ports:
       - '3002:3002'
     environment:
@@ -25,9 +25,3 @@ services:
       - NEXTAUTH_URL=$NEXTAUTH_URL
       - NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 
-  client:
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile
-    ports:
-      - '3001:3001'
