@@ -2,6 +2,11 @@ FROM node:20-alpine AS base
 ENV SCOPE=@avila-tek/api
 RUN apk add --no-cache libc6-compat git
 RUN apk update
+COPY . .
+
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci
 
 FROM base AS builder
 WORKDIR /app
