@@ -28,23 +28,11 @@ RUN npm ci --no-audit
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
-# Uncomment and use build args to enable remote caching
-# ARG TURBO_TEAM
-# ENV TURBO_TEAM=$TURBO_TEAM
-
-# ARG TURBO_TOKEN
-# ENV TURBO_TOKEN=$TURBO_TOKEN
-
 RUN npx turbo build --scope=${SCOPE} --filter=${SCOPE} --include-dependencies
 
 FROM base AS runner
 WORKDIR /app
 
-ARG TURBO_TOKEN
-ARG TURBO_TEAM
-
-ENV TURBO_TOKEN=${TURBO_TOKEN}
-ENV TURBO_TEAM=${TURBO_TEAM}
 ENV NODE_ENV=production
 
 # Don't run production as root
@@ -58,5 +46,7 @@ COPY --from=installer /app/apps/backoffice/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/.next/static ./apps/backoffice/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/backoffice/public ./apps/backoffice/public
+
+EXPOSE 3002
 
 CMD node apps/backoffice/server.js

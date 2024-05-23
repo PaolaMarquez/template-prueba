@@ -33,7 +33,9 @@
     "react-dom": "^18",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "axios": "^1.6.2",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@avila-tek/eslint-config": "*",
